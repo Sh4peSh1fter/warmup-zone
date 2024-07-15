@@ -1,12 +1,11 @@
 # Imports
-from logging_config import setup_module_logger
+from config import setup_module_logger
+from config import STARTING_ATTEMPTS, STARTING_BROKEN_BALLS, Result
 
-# Consts
-STARTING_ATTEMPTS = 0
-STARTING_BROKEN_BALLS = 0
 
 # Logging
 logger = setup_module_logger(__name__)
+
 
 def throw_ball(curr_floor: int, breaking_floor: int) -> bool:
     # DEBUG
@@ -15,9 +14,9 @@ def throw_ball(curr_floor: int, breaking_floor: int) -> bool:
 
     return curr_floor >= breaking_floor
 
-def recursive_binary_search(low, high, breaking_floor, attempts, broken_balls):
+def recursive_binary_search(low: int, high: int, breaking_floor: int, attempts: int, broken_balls: int) -> Result:
     if low == high:
-        return attempts, broken_balls, low
+        return Result(attempts, broken_balls, low)
 
     mid = (low + high) // 2
 
@@ -28,7 +27,7 @@ def recursive_binary_search(low, high, breaking_floor, attempts, broken_balls):
     else:
         return recursive_binary_search(mid + 1, high, breaking_floor, attempts, broken_balls)
 
-def binary_search(low, high, breaking_floor, attempts, broken_balls):
+def binary_search(low: int, high: int, breaking_floor: int, attempts: int, broken_balls: int) -> Result:
     last_safe_floor = 0
 
     while low <= high:
@@ -54,7 +53,7 @@ def binary_search(low, high, breaking_floor, attempts, broken_balls):
                  f'\tbreaking floor guessed: {last_safe_floor + 1}\n'
                  f'\n--------------------------\n')
 
-    return attempts, broken_balls, last_safe_floor + 1
+    return Result(attempts, broken_balls, last_safe_floor + 1)
 
 
 def find_breaking_floor(starting_floor: int, ending_floor: int, breaking_floor: int):
@@ -62,7 +61,7 @@ def find_breaking_floor(starting_floor: int, ending_floor: int, breaking_floor: 
     logger.debug(f'setup\n'
                  f'\tstarting floor: {starting_floor}\n'
                  f'\tending floor: {ending_floor}\n'
-                 f'\tbreaking floor: {breaking_floor + 1}')
+                 f'\tbreaking floor: {breaking_floor}')
 
     # return recursive_binary_search(starting_floor, ending_floor, breaking_floor, STARTING_ATTEMPTS, STARTING_BROKEN_BALLS)
     return binary_search(starting_floor, ending_floor, breaking_floor, STARTING_ATTEMPTS, STARTING_BROKEN_BALLS)

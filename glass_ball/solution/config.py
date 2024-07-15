@@ -1,10 +1,26 @@
 # Imports
 import logging
 import os
+from dataclasses import dataclass
+
 
 # Consts
+DEBUG = False # True
 LOGS_DIR = 'logs'
 LOGGED_MODULES_NAME_LIST = ['binary_search', 'optimal_steps', 'optimal_steps_with_binary_search']
+STARTING_ATTEMPTS = 0
+STARTING_BROKEN_BALLS = 0
+MIN_STARTING_FLOOR = 1
+MAX_ENDING_FLOOR = 200
+ALGORITHMS_IN_USE = ['binary_search', 'optimal_steps', 'optimal_steps_with_binary_search']
+
+
+# data classes
+@dataclass
+class Result:
+    attempts: int
+    broken_balls: int
+    breaking_floor: int
 
 def setup_module_logger(module_name):
     # Create a logs directory if it doesn't exist

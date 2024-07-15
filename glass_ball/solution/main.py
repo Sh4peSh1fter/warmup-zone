@@ -1,95 +1,63 @@
 # imports
 from random import randrange
+from typing import List
+import numpy as np
 import matplotlib.pyplot as plt
-from logging_config import configure_logging
+from config import configure_logging
+from config import MIN_STARTING_FLOOR, MAX_ENDING_FLOOR, ALGORITHMS_IN_USE, DEBUG
+from config import Result
 ## custom modules
 import binary_search
 import optimal_steps
 import optimal_steps_with_binary_search
 
 
-# consts
-MIN_STARTING_FLOOR = 1
-MAX_ENDING_FLOOR = 200
-DEBUG = False
-
-
 # logging
 configure_logging(DEBUG)
 
 
+def generate_results(algorithm, start: int, end: int, floors: List[int]) -> List[Result]:
+    return [algorithm.find_breaking_floor(start, end, floor) for floor in floors]
+
+
+def plot_results(breaking_floors: List[int], results: List[List[Result]]):
+    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(21, 6))
+
+    for res, label in zip(results, ALGORITHMS_IN_USE):
+        attempts = [r.attempts for r in res]
+        broken_balls = [r.broken_balls for r in res]
+        accuracy = [100 if r.breaking_floor == f else 0 for r, f in zip(res, breaking_floors)]
+
+        ax1.plot(breaking_floors, attempts, label=label)
+        ax2.plot(breaking_floors, broken_balls, label=label)
+        ax3.plot(breaking_floors, accuracy, label=label)
+
+    ax1.set(xlabel='Breaking Floor', ylabel='Number of Attempts', title='Number of Attempts Comparison')
+    ax2.set(xlabel='Breaking Floor', ylabel='Number of Broken Balls', title='Number of Broken Balls Comparison')
+    ax3.set(xlabel='Breaking Floor', ylabel='Accuracy (%)', title='Accuracy Comparison')
+
+    for ax in (ax1, ax2, ax3):
+        ax.legend()
+
+    plt.tight_layout()
+    plt.get_current_fig_manager().window.state('zoomed')
+    plt.show()
+
+
 def main() -> None:
-    starting_floor = randrange(MIN_STARTING_FLOOR, MAX_ENDING_FLOOR)
-    ending_floor = randrange(starting_floor, MAX_ENDING_FLOOR + 1)
+    # starting_floor = randrange(MIN_STARTING_FLOOR, MAX_ENDING_FLOOR)
+    # ending_floor = randrange(starting_floor, MAX_ENDING_FLOOR + 1)
     # DEBUG
     starting_floor = 1
     ending_floor = 100
     # starting_floor = 60
     # ending_floor = 80
-    breaking_floor = randrange(starting_floor, ending_floor + 1)
+    breaking_floors = list(range(starting_floor, ending_floor + 1))
 
-    binary_search_attempts = []
-    binary_search_broken_balls = []
-    binary_search_accuracy = []
-    optimal_steps_attempts = []
-    optimal_steps_broken_balls = []
-    optimal_steps_accuracy = []
-    optimal_steps_with_binary_search_attempts = []
-    optimal_steps_with_binary_search_broken_balls = []
-    optimal_steps_with_binary_search_accuracy = []
-    breaking_floors_list = range(starting_floor, ending_floor + 1)
+    algorithms = [binary_search, optimal_steps, optimal_steps_with_binary_search]
+    results = [generate_results(alg, starting_floor, ending_floor, breaking_floors) for alg in algorithms]
 
-    for curr_breaking_floor in breaking_floors_list:
-        binary_search_result = binary_search.find_breaking_floor(starting_floor, ending_floor, curr_breaking_floor)
-        optimal_steps_result = optimal_steps.find_breaking_floor(starting_floor, ending_floor, curr_breaking_floor)
-        optimal_steps_with_binary_search_result = optimal_steps_with_binary_search.find_breaking_floor(starting_floor, ending_floor, curr_breaking_floor)
-
-        binary_search_attempts.append(binary_search_result[0])
-        binary_search_broken_balls.append(binary_search_result[1])
-        binary_search_accuracy.append(100 if (binary_search_result[2] == curr_breaking_floor) else 0)
-        optimal_steps_attempts.append(optimal_steps_result[0])
-        optimal_steps_broken_balls.append(optimal_steps_result[1])
-        optimal_steps_accuracy.append(100 if (optimal_steps_result[2] == curr_breaking_floor) else 0)
-        optimal_steps_with_binary_search_attempts.append(optimal_steps_with_binary_search_result[0])
-        optimal_steps_with_binary_search_broken_balls.append(optimal_steps_with_binary_search_result[1])
-        optimal_steps_with_binary_search_accuracy.append(100 if (optimal_steps_with_binary_search_result[2] == curr_breaking_floor) else 0)
-
-    # Plotting the results
-    plt.figure(figsize=(21, 6))
-
-    # Plot attempts
-    plt.subplot(1, 3, 1)
-    plt.plot(breaking_floors_list, optimal_steps_attempts, label='Two-Ball Algorithm')
-    plt.plot(breaking_floors_list, binary_search_attempts, label='Binary Search Algorithm')
-    plt.plot(breaking_floors_list, optimal_steps_with_binary_search_attempts, label='Combination Algorithm')
-    plt.xlabel('Breaking Floor')
-    plt.ylabel('Number of Attempts')
-    plt.title('Number of Attempts Comparison')
-    plt.legend()
-
-    # Plot broken balls
-    plt.subplot(1, 3, 2)
-    plt.plot(breaking_floors_list, optimal_steps_broken_balls, label='Two-Ball Algorithm')
-    plt.plot(breaking_floors_list, binary_search_broken_balls, label='Binary Search Algorithm')
-    plt.plot(breaking_floors_list, optimal_steps_with_binary_search_broken_balls, label='Combination Algorithm')
-    plt.xlabel('Breaking Floor')
-    plt.ylabel('Number of Broken Balls')
-    plt.title('Number of Broken Balls Comparison')
-    plt.legend()
-
-    # Plot accuracy
-    plt.subplot(1, 3, 3)
-    plt.plot(breaking_floors_list, optimal_steps_accuracy, label='Two-Ball Algorithm')
-    plt.plot(breaking_floors_list, binary_search_accuracy, label='Binary Search Algorithm')
-    plt.plot(breaking_floors_list, optimal_steps_with_binary_search_accuracy, label='Combination Algorithm')
-    plt.xlabel('Breaking Floor')
-    plt.ylabel('Accuracy (%)')
-    plt.title('Accuracy Comparison')
-    plt.legend()
-
-    plt.tight_layout()
-    plt.get_current_fig_manager().window.state('zoomed') # full screen
-    plt.show()
+    plot_results(breaking_floors, results)
 
 
 if __name__ == '__main__':
