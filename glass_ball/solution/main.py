@@ -1,12 +1,22 @@
+# imports
 from random import randrange
 import matplotlib.pyplot as plt
-
+from logging_config import configure_logging
+## custom modules
 import binary_search
 import optimal_steps
 import optimal_steps_with_binary_search
 
+
+# consts
 MIN_STARTING_FLOOR = 1
 MAX_ENDING_FLOOR = 200
+DEBUG = False
+
+
+# logging
+configure_logging(DEBUG)
+
 
 def main() -> None:
     starting_floor = randrange(MIN_STARTING_FLOOR, MAX_ENDING_FLOOR)
@@ -78,29 +88,8 @@ def main() -> None:
     plt.legend()
 
     plt.tight_layout()
+    plt.get_current_fig_manager().window.state('zoomed') # full screen
     plt.show()
-
-    # # DEBUG
-    # print("SETUP\n"
-    #       "~~~~~\n"
-    #       f"starting floor: \t{starting_floor}  \n"
-    #       f"ending floor:   \t{ending_floor}    \n"
-    #       f"breaking floor: \t{breaking_floor}  \n\n")
-    #
-    # print("binary tree:")
-    # attempts, glass_balls_broken, suggested_floor = binary_search.find_breaking_floor(starting_floor, ending_floor, breaking_floor)
-    #
-    # # print("optimal steps:")
-    # # attempts, glass_balls_broken, suggested_floor = optimal_steps.find_breaking_floor(starting_floor, ending_floor, breaking_floor)
-    #
-    # # print("optimal step + binary tree:")
-    # # optimal_steps_with_binary_search.find_breaking_floor(starting_floor, ending_floor, breaking_floor)
-    #
-    # # DEBUG
-    # print(f"\n\nANSWER\n"
-    #       f"num of attempts: {attempts}\n"
-    #       f"num of broken glass balls: {glass_balls_broken}\n"
-    #       f"I think the breaking floor is {suggested_floor}")
 
 
 if __name__ == '__main__':

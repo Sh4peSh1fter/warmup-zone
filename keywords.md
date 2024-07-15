@@ -1,4 +1,4 @@
 leet code
 dynamic programming
-interval schedualing
+interval scheduling
 greedy algorithm
