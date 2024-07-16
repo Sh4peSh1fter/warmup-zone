@@ -7,19 +7,19 @@ from dataclasses import dataclass
 # Consts
 DEBUG = False # True
 LOGS_DIR = 'logs'
-LOGGED_MODULES_NAME_LIST = ['binary_search', 'optimal_steps', 'optimal_steps_with_binary_search']
+LOGGED_MODULES_NAME_LIST = ['binary_search', 'optimal_steps']
 STARTING_ATTEMPTS = 0
-STARTING_BROKEN_BALLS = 0
+STARTING_BROKEN_ITEMS_AMOUNT = 0
 MIN_STARTING_FLOOR = 1
-MAX_ENDING_FLOOR = 200
-ALGORITHMS_IN_USE = ['binary_search', 'optimal_steps', 'optimal_steps_with_binary_search']
+MAX_ENDING_FLOOR = 400
+ALGORITHMS_IN_USE = ['binary_search', 'optimal_steps']
 
 
 # data classes
 @dataclass
 class Result:
     attempts: int
-    broken_balls: int
+    broken_items_amount: int
     breaking_floor: int
 
 def setup_module_logger(module_name):

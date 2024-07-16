@@ -9,7 +9,6 @@ from config import Result
 ## custom modules
 import binary_search
 import optimal_steps
-import optimal_steps_with_binary_search
 
 
 # logging
@@ -25,15 +24,15 @@ def plot_results(breaking_floors: List[int], results: List[List[Result]]):
 
     for res, label in zip(results, ALGORITHMS_IN_USE):
         attempts = [r.attempts for r in res]
-        broken_balls = [r.broken_balls for r in res]
+        broken_items_amount = [r.broken_items_amount for r in res]
         accuracy = [100 if r.breaking_floor == f else 0 for r, f in zip(res, breaking_floors)]
 
         ax1.plot(breaking_floors, attempts, label=label)
-        ax2.plot(breaking_floors, broken_balls, label=label)
+        ax2.plot(breaking_floors, broken_items_amount, label=label)
         ax3.plot(breaking_floors, accuracy, label=label)
 
     ax1.set(xlabel='Breaking Floor', ylabel='Number of Attempts', title='Number of Attempts Comparison')
-    ax2.set(xlabel='Breaking Floor', ylabel='Number of Broken Balls', title='Number of Broken Balls Comparison')
+    ax2.set(xlabel='Breaking Floor', ylabel='Number of Broken Items', title='Number of Broken Items Comparison')
     ax3.set(xlabel='Breaking Floor', ylabel='Accuracy (%)', title='Accuracy Comparison')
 
     for ax in (ax1, ax2, ax3):
@@ -45,16 +44,16 @@ def plot_results(breaking_floors: List[int], results: List[List[Result]]):
 
 
 def main() -> None:
-    # starting_floor = randrange(MIN_STARTING_FLOOR, MAX_ENDING_FLOOR)
-    # ending_floor = randrange(starting_floor, MAX_ENDING_FLOOR + 1)
+    starting_floor = randrange(MIN_STARTING_FLOOR, MAX_ENDING_FLOOR)
+    ending_floor = randrange(starting_floor, MAX_ENDING_FLOOR + 1)
     # DEBUG
-    starting_floor = 1
-    ending_floor = 100
+    # starting_floor = 1
+    # ending_floor = 100
     # starting_floor = 60
     # ending_floor = 80
     breaking_floors = list(range(starting_floor, ending_floor + 1))
 
-    algorithms = [binary_search, optimal_steps, optimal_steps_with_binary_search]
+    algorithms = [binary_search, optimal_steps]
     results = [generate_results(alg, starting_floor, ending_floor, breaking_floors) for alg in algorithms]
 
     plot_results(breaking_floors, results)
